@@ -1,0 +1,37 @@
+@startuml Diagrama de Contexto Repo-Guardian
+!theme cerulean-outline
+
+actor "Usuario" as user
+rectangle "Repo-Guardian" as rg {
+  component "CLI" as cli
+  component "TUI" as tui
+  component "Escáner de Objetos" as scanner
+  component "Constructor DAG" as dag
+  component "Detector JW" as jw
+  component "Módulo de Reparación" as repair
+  
+  cli --> tui
+  tui --> scanner
+  tui --> dag
+  tui --> jw
+  tui --> repair
+}
+
+database "Repositorio Git" as git {
+  folder ".git/objects/" as objects
+  folder ".git/refs/" as refs
+  file ".git/index" as index
+  file ".git/HEAD" as head
+  
+  objects --> refs
+  refs --> head
+  objects --> index
+}
+
+cloud "API de GitHub" as github
+
+user --> cli : interactúa
+rg --> git : lee/repara
+rg --> github : exporta artefactos
+
+@enduml 

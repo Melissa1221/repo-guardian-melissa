@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-guardian"
+version = "0.1.0"
+description = "A CLI/TUI tool for auditing, repairing, and re-linearizing Git repository integrity"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Version Control :: Git",
+]
+dependencies = [
+    "networkx>=3.2.1",
+    "textdistance>=4.6.0",
+    "rich>=13.6.0",
+    "pygtrie>=2.5.0",
+]
+
+[project.scripts]
+guardian = "guardian.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/username/repo-guardian"
+"Bug Tracker" = "https://github.com/username/repo-guardian/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+python_classes = "Test*"
+
+[tool.ruff]
+select = ["E", "F", "W", "I"]
+line-length = 88
+target-version = "py310"
+ignore = ["E203"] 
