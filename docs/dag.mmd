@@ -1,0 +1,54 @@
+```mermaid
+graph TD
+    %% Git Commit DAG Structure
+    %% Nodes represent commits, edges represent parent-child relationships
+    
+    %% Define commits with their SHA hashes
+    C1["Commit A (abc123)"]
+    C2["Commit B (def456)"]
+    C3["Commit C (ghi789)"]
+    C4["Commit D (jkl012)"]
+    C5["Commit E (mno345)"]
+    C6["Merge F (pqr678)"]
+    
+    %% Define parent-child relationships (edges)
+    %% In Git, arrows point from child to parent
+    C2 --> C1
+    C3 --> C2
+    C4 --> C2
+    C5 --> C4
+    C6 --> C3
+    C6 --> C5
+    
+    %% Add generation numbers
+    subgraph "Generation Numbers"
+        GN0["GN=0: abc123"]
+        GN1["GN=1: def456"]
+        GN2["GN=2: ghi789, jkl012"]
+        GN3["GN=3: mno345"]
+        GN4["GN=4: pqr678"]
+    end
+    
+    %% Add notes on DAG properties
+    subgraph "Graph Properties"
+        N1["Root: Commit with no parents"]
+        N2["Head: Commit with no children"]
+        N3["Merge: Commit with multiple parents"]
+        N4["Topological Order: Visit parents before children"]
+    end
+    
+    %% Add note about Generation Number
+    subgraph "Generation Number Calculation"
+        GNC1["GN(commit) = 0 if no parents"]
+        GNC2["GN(commit) = max(GN(parent1), GN(parent2), ...) + 1"]
+    end
+    
+    %% Style nodes
+    classDef commit fill:#e6f7ff,stroke:#1890ff,stroke-width:2px
+    classDef gn fill:#f6ffed,stroke:#52c41a,stroke-width:1px
+    classDef note fill:#fff7e6,stroke:#fa8c16,stroke-width:1px
+    
+    class C1,C2,C3,C4,C5,C6 commit
+    class GN0,GN1,GN2,GN3,GN4 gn
+    class N1,N2,N3,N4,GNC1,GNC2 note
+``` 
