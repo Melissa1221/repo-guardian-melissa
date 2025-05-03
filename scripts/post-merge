@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# post-merge hook for repo-guardian
+# This script is executed after a merge is completed
+# It exports the repository graph to GraphML and uploads it to the latest GitHub release
+
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+# Get the latest tag
+TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo "latest")"
+REPO_PATH="$(git rev-parse --show-toplevel)"
+OUT="$(mktemp --suffix=.graphml)"
+
+echo "Exporting repository graph to GraphML..."
+guardian export-graph --repo "$REPO_PATH" --out "$OUT" --format graphml
+
+# Check if gh CLI is available
+if command -v gh >/dev/null 2>&1; then
+    echo "Uploading graph to release $TAG..."
+    gh release upload "$TAG" "$OUT" --clobber
+    echo "✓ DAG exported to $OUT and uploaded to $TAG"
+else
+    echo "GitHub CLI (gh) not found. Graph exported to $OUT but not uploaded."
+    echo "To install gh CLI, visit: https://github.com/cli/cli#installation"
+    echo "To manually upload, run: gh release upload $TAG $OUT --clobber"
+fi
+
+# Keep a local copy
+cp "$OUT" "$REPO_PATH/recovered.graphml"
+echo "A copy of the graph is saved to $REPO_PATH/recovered.graphml" 

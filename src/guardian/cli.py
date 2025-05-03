@@ -7,7 +7,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from guardian.object_scanner import GitObjectError, scan_packfile
+import networkx as nx
+
+from guardian.dag_builder import build_graph
+from guardian.object_scanner import GitObjectError, iter_objects, scan_packfile
 
 
 def main():
@@ -30,6 +33,30 @@ def main():
         help="Enable verbose output"
     )
 
+    # Configure 'export-graph' subcommand
+    export_parser = subparsers.add_parser(
+        "export-graph",
+        help="Export repository graph to file"
+    )
+    export_parser.add_argument(
+        "--repo",
+        type=Path,
+        default=".",
+        help="Path to the Git repository (default: current directory)"
+    )
+    export_parser.add_argument(
+        "--out",
+        type=Path,
+        required=True,
+        help="Output file path"
+    )
+    export_parser.add_argument(
+        "--format",
+        choices=["graphml", "gexf", "json"],
+        default="graphml",
+        help="Output file format (default: graphml)"
+    )
+
     # Parse arguments
     args = parser.parse_args()
 
@@ -41,6 +68,8 @@ def main():
     # Execute the appropriate command
     if args.command == "scan":
         return cmd_scan(args)
+    elif args.command == "export-graph":
+        return cmd_export_graph(args)
 
     return 0
 
@@ -81,6 +110,57 @@ def cmd_scan(args):
 
     print("Scan completed")
     return 0
+
+
+def cmd_export_graph(args):
+    """Execute the 'export-graph' command.
+
+    Args:
+        args: Parsed arguments from argparse
+
+    Returns:
+        Exit code (0 for success, non-zero for errors)
+    """
+    repo_path = args.repo
+    output_file = args.out
+    output_format = args.format
+
+    # Verify repository exists
+    if not repo_path.exists():
+        print(f"Error: Repository path {repo_path} does not exist", file=sys.stderr)
+        return 1
+
+    # Process git objects and build graph
+    try:
+        print(f"Reading Git objects from {repo_path}...")
+        objects = list(iter_objects(repo_path))
+        print(f"Found {len(objects)} objects")
+
+        print("Building commit graph...")
+        graph = build_graph(objects)
+        print(f"Graph built with {len(graph.nodes)} nodes and {len(graph.edges)} edges")
+
+        # Export graph
+        print(f"Exporting graph to {output_file}...")
+        if output_format == "graphml":
+            nx.write_graphml(graph, output_file)
+        elif output_format == "gexf":
+            nx.write_gexf(graph, output_file)
+        elif output_format == "json":
+            data = nx.node_link_data(graph)
+            import json
+            with open(output_file, 'w') as f:
+                json.dump(data, f, indent=2)
+
+        print(f"Graph exported successfully to {output_file}")
+        return 0
+
+    except GitObjectError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        return 3
 
 
 if __name__ == "__main__":
