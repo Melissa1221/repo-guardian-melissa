@@ -3,7 +3,6 @@
 from unittest.mock import Mock
 
 import networkx as nx
-import pytest
 from guardian.dag_builder import (
     build_graph,
     calculate_generation_numbers,
@@ -15,7 +14,6 @@ from guardian.dag_builder import (
 from guardian.object_scanner import GitObject
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_build_graph_simple():
     """Test building a graph from a simple commit history."""
     # Mock commit objects
@@ -53,7 +51,7 @@ def test_build_graph_simple():
     assert set(graph.nodes()) == {'abc123', 'def456', 'ghi789'}
 
     # Check edges (child -> parent)
-    assert list(graph.edges()) == [('def456', 'abc123'), ('ghi789', 'def456')]
+    assert sorted(graph.edges()) == [('def456', 'abc123'), ('ghi789', 'def456')]
 
     # Check node attributes
     assert graph.nodes['abc123']['object'] == commit1
@@ -61,7 +59,6 @@ def test_build_graph_simple():
     assert graph.nodes['ghi789']['object'] == commit3
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_build_graph_with_merge():
     """Test building a graph with a merge commit."""
     # Mock commit objects for main branch
@@ -126,7 +123,6 @@ def test_build_graph_with_merge():
     assert graph.nodes['mno345']['object'] == commit4
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_calculate_generation_numbers():
     """Test calculation of generation numbers."""
     # Create a simple graph structure
@@ -172,7 +168,6 @@ def test_calculate_generation_numbers():
     assert gen_numbers == expected
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_find_roots():
     """Test finding root commits in the graph."""
     graph = nx.DiGraph()
@@ -193,7 +188,6 @@ def test_find_roots():
     assert set(roots) == {'root1', 'root2'}
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_find_heads():
     """Test finding head commits in the graph."""
     graph = nx.DiGraph()
@@ -215,7 +209,6 @@ def test_find_heads():
     assert set(heads) == {'B', 'C'}
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_get_commit_path():
     """Test getting path from commit to root."""
     graph = nx.DiGraph()
@@ -237,7 +230,6 @@ def test_get_commit_path():
     assert path == ['C', 'B', 'A', 'root']
 
 
-@pytest.mark.skip("Not implemented yet")
 def test_get_common_ancestor():
     """Test finding common ancestor of two commits."""
     graph = nx.DiGraph()
