@@ -94,7 +94,7 @@ def main():
 
     # Execute the appropriate command
     if args.command == "scan":
-        if hasattr(args, 'tui') and args.tui:
+        if hasattr(args, "tui") and args.tui:
             return cmd_scan_tui(args)
         else:
             return cmd_scan(args)

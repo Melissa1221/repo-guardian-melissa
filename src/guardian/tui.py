@@ -47,8 +47,6 @@ class RepoGuardianTUI:
             expand=True,
         )
 
-        task = progress.add_task("", total=100, completed=int(progress_value * 100))
-
         return Panel(progress, title="REPO-GUARDIAN v0.1.0")
 
     def _render_errors_panel(self) -> Panel:
@@ -165,9 +163,9 @@ class RepoGuardianTUI:
                             "metadata": {"Similarity": "0.92"},
                         }
                     )
-                
+
                 # Render the progress
-                self.render(progress_value=i/100)
+                self.render(progress_value=i / 100)
 
         # Final render with completed progress
         self.render(progress_value=1.0)
@@ -179,10 +177,10 @@ class RepoGuardianTUI:
 
 def run_tui(repo_path: Path, demo_mode: bool = False):
     tui = RepoGuardianTUI(repo_path)
-    
+
     # Detect if running in a test environment
     in_test = "PYTEST_CURRENT_TEST" in os.environ
-    
+
     if demo_mode:
         tui.run_demo(wait_for_input=not in_test)
     else:
