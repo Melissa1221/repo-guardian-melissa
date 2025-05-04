@@ -36,8 +36,8 @@ def path_similarity(path_a: List[str], path_b: List[str]) -> float:
         Similarity score between 0.0 and 1.0
     """
     # Convert paths to strings for comparison
-    str_a = ''.join(path_a)
-    str_b = ''.join(path_b)
+    str_a = "".join(path_a)
+    str_b = "".join(path_b)
 
     # Calculate Jaro-Winkler similarity
     return textdistance.jaro_winkler.normalized_similarity(str_a, str_b)
@@ -85,7 +85,7 @@ def find_potential_rewrites(
     for i, head1 in enumerate(heads):
         path1 = calculate_path_fingerprint(graph, head1)
 
-        for head2 in heads[i+1:]:
+        for head2 in heads[i + 1 :]:
             path2 = calculate_path_fingerprint(graph, head2)
 
             # Skip comparison if paths are identical (same branch)

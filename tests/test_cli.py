@@ -38,6 +38,7 @@ class TestCLI:
             # Setup mock args
             mock_args = mock_parser.parse_args.return_value
             mock_args.command = "scan"
+            mock_args.tui = False  # Add tui attribute to ensure cmd_scan is called
 
             # Mock cmd_scan to return a specific value
             with patch("guardian.cli.cmd_scan", return_value=42) as mock_cmd_scan:
@@ -51,6 +52,7 @@ class TestCLI:
 
     def test_cmd_scan_nonexistent_repo(self):
         """Test scanning a nonexistent repository."""
+
         # Create args with a nonexistent repo path
         class Args:
             repo_path = Path("/nonexistent/path")

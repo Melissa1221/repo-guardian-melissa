@@ -38,7 +38,7 @@ def temp_git_object(tmp_path):
         "hash": hash_val,
         "type": "blob",
         "size": size,
-        "content": content
+        "content": content,
     }
 
 
