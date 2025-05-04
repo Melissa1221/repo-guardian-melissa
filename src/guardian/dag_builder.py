@@ -21,15 +21,17 @@ def _parse_commit_parents(commit_content: bytes) -> List[str]:
         List of parent commit hashes
     """
     parents = []
-    lines = commit_content.split(b'\n')
+    lines = commit_content.split(b"\n")
 
     for line in lines:
-        if line.startswith(b'parent '):
-            parent_hash = line[7:].decode('utf-8').strip()
+        if line.startswith(b"parent "):
+            parent_hash = line[7:].decode("utf-8").strip()
             parents.append(parent_hash)
-        elif (not line.startswith(b'tree ') and
-              not line.startswith(b'author ') and
-              not line.startswith(b'committer ')):
+        elif (
+            not line.startswith(b"tree ")
+            and not line.startswith(b"author ")
+            and not line.startswith(b"committer ")
+        ):
             # We've reached the commit message (after headers)
             break
 
@@ -55,7 +57,7 @@ def build_graph(objects: Iterable[GitObject]) -> DiGraph:
     G = DiGraph()
 
     # Filter out non-commit objects
-    commits = [obj for obj in objects if obj.type == 'commit']
+    commits = [obj for obj in objects if obj.type == "commit"]
 
     # Add all commits as nodes
     for commit in commits:
@@ -220,7 +222,7 @@ def get_common_ancestor(graph: DiGraph, commit1: str, commit2: str) -> Optional[
     queue = deque([(commit2, 0)])  # (commit, distance)
 
     common_ancestors = []
-    min_distance = float('inf')
+    min_distance = float("inf")
 
     while queue:
         current, distance = queue.popleft()

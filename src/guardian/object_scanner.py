@@ -15,6 +15,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 @dataclass
 class GitObject:
     """Representation of a Git object."""
+
     type: str
     size: int
     content: bytes
@@ -23,6 +24,7 @@ class GitObject:
 
 class GitObjectError(Exception):
     """Exception raised for errors in Git object operations."""
+
     pass
 
 
@@ -59,21 +61,21 @@ def read_loose(path: Path) -> GitObject:
         )
 
     # Parse header "type size\0"
-    header_end = decompressed.find(b'\0')
+    header_end = decompressed.find(b"\0")
     if header_end == -1:
         raise GitObjectError("Invalid object format: null byte separator not found")
 
-    header = decompressed[:header_end].decode('utf-8', errors='replace')
-    content = decompressed[header_end + 1:]
+    header = decompressed[:header_end].decode("utf-8", errors="replace")
+    content = decompressed[header_end + 1 :]
 
     # Split header into type and size
     try:
-        obj_type, size_str = header.split(' ', 1)
+        obj_type, size_str = header.split(" ", 1)
     except ValueError:
         raise GitObjectError(f"Invalid header format: {header}")
 
     # Validate object type
-    valid_types = ['blob', 'tree', 'commit', 'tag']
+    valid_types = ["blob", "tree", "commit", "tag"]
     if obj_type not in valid_types:
         raise GitObjectError(f"Unknown object type: {obj_type}")
 
@@ -91,9 +93,7 @@ def read_loose(path: Path) -> GitObject:
 
     # Verify hash matches path
     hasher = hashlib.sha1()
-    hasher.update(
-        obj_type.encode() + b' ' + str(size).encode() + b'\0' + content
-    )
+    hasher.update(obj_type.encode() + b" " + str(size).encode() + b"\0" + content)
     actual_hash = hasher.hexdigest()
 
     if actual_hash != expected_hash:
@@ -106,18 +106,19 @@ def read_loose(path: Path) -> GitObject:
 
 # Git object types in packfiles are encoded as integers
 PACK_OBJECT_TYPES = {
-    1: 'commit',
-    2: 'tree',
-    3: 'blob',
-    4: 'tag',
-    6: 'ofs-delta',
-    7: 'ref-delta'
+    1: "commit",
+    2: "tree",
+    3: "blob",
+    4: "tag",
+    6: "ofs-delta",
+    7: "ref-delta",
 }
 
 
 @dataclass
 class PackHeader:
     """Packfile header information."""
+
     signature: bytes
     version: int
     object_count: int
@@ -126,6 +127,7 @@ class PackHeader:
 @dataclass
 class PackEntry:
     """Information about an entry in a packfile."""
+
     offset: int
     type: str
     size: int
@@ -150,24 +152,22 @@ def read_pack_header(pack_path: Path) -> PackHeader:
         raise GitObjectError(f"Packfile not found: {pack_path}")
 
     try:
-        with open(pack_path, 'rb') as f:
+        with open(pack_path, "rb") as f:
             # Read 12-byte header: 4-byte signature, 4-byte version, 4-byte count
             header_data = f.read(12)
             if len(header_data) < 12:
                 raise GitObjectError("Packfile header is truncated")
 
             signature = header_data[:4]
-            if signature != b'PACK':
+            if signature != b"PACK":
                 raise GitObjectError(f"Invalid packfile signature: {signature}")
 
-            version, object_count = struct.unpack('>II', header_data[4:12])
+            version, object_count = struct.unpack(">II", header_data[4:12])
             if version != 2:
                 raise GitObjectError(f"Unsupported packfile version: {version}")
 
             return PackHeader(
-                signature=signature,
-                version=version,
-                object_count=object_count
+                signature=signature, version=version, object_count=object_count
             )
     except (IOError, PermissionError) as e:
         raise GitObjectError(f"Failed to read packfile: {e}")
@@ -253,19 +253,19 @@ def read_pack_entry(pack_data: bytes, offset: int) -> Tuple[PackEntry, int]:
             offset=offset - 1,  # Original offset before reading
             type=type_name,
             size=size,
-            data_offset=offset
+            data_offset=offset,
         )
 
         # Handle deltas
-        if type_name == 'ref-delta':
+        if type_name == "ref-delta":
             # Next 20 bytes are the base object hash
             if offset + 20 > len(pack_data):
                 raise GitObjectError("Truncated ref-delta in packfile")
 
-            entry.base_hash = pack_data[offset:offset+20].hex()
+            entry.base_hash = pack_data[offset : offset + 20].hex()
             offset += 20
             entry.data_offset = offset
-        elif type_name == 'ofs-delta':
+        elif type_name == "ofs-delta":
             # Read a variable-length negative offset
             neg_offset, new_offset = read_varint(pack_data, offset)
             entry.base_offset = entry.offset - neg_offset
@@ -294,21 +294,21 @@ def read_idx_file(idx_path: Path) -> Dict[str, int]:
         raise GitObjectError(f"Index file not found: {idx_path}")
 
     try:
-        with open(idx_path, 'rb') as f:
+        with open(idx_path, "rb") as f:
             # Read and validate header
             header = f.read(8)
             if len(header) < 8:
                 raise GitObjectError("Truncated idx file")
 
-            signature, version = struct.unpack('>4sI', header)
-            if signature != b'\xfftOc':
+            signature, version = struct.unpack(">4sI", header)
+            if signature != b"\xfftOc":
                 raise GitObjectError(f"Invalid idx signature: {signature}")
 
             if version != 2:
                 raise GitObjectError(f"Unsupported idx version: {version}")
 
             # Read fanout table (256 * 4 bytes)
-            fanout = list(struct.unpack('>256I', f.read(256 * 4)))
+            fanout = list(struct.unpack(">256I", f.read(256 * 4)))
             object_count = fanout[255]
 
             # Read object hashes (20 bytes each)
@@ -321,7 +321,7 @@ def read_idx_file(idx_path: Path) -> Dict[str, int]:
             f.seek(object_count * 4, os.SEEK_CUR)
 
             # Read offsets (4 bytes each)
-            offsets = list(struct.unpack(f'>{object_count}I', f.read(object_count * 4)))
+            offsets = list(struct.unpack(f">{object_count}I", f.read(object_count * 4)))
 
             # Create hash -> offset mapping
             hash_to_offset = {}
@@ -351,7 +351,7 @@ def extract_object_from_packfile(pack_path: Path, offset: int) -> GitObject:
         raise GitObjectError(f"Packfile not found: {pack_path}")
 
     try:
-        with open(pack_path, 'rb') as f:
+        with open(pack_path, "rb") as f:
             f.seek(offset)
             pack_data = f.read()
 
@@ -371,7 +371,7 @@ def extract_object_from_packfile(pack_path: Path, offset: int) -> GitObject:
                 )
 
             # Handle delta objects
-            if entry.type in ('ref-delta', 'ofs-delta'):
+            if entry.type in ("ref-delta", "ofs-delta"):
                 # Delta handling requires base object resolution
                 # This implementation is simplified for clarity
                 raise GitObjectError("Delta objects are not fully implemented yet")
@@ -383,16 +383,11 @@ def extract_object_from_packfile(pack_path: Path, offset: int) -> GitObject:
             obj_hash = hasher.hexdigest()
 
             return GitObject(
-                type=entry.type,
-                size=entry.size,
-                content=decompressed,
-                hash=obj_hash
+                type=entry.type, size=entry.size, content=decompressed, hash=obj_hash
             )
 
     except (IOError, PermissionError) as e:
-        raise GitObjectError(
-            f"Failed to read packfile: {e}"
-        )
+        raise GitObjectError(f"Failed to read packfile: {e}")
 
 
 def find_object_in_packfiles(repo_path: Path, obj_hash: str) -> Optional[GitObject]:
@@ -455,7 +450,7 @@ def scan_packfile(pack_path: Path) -> List[PackEntry]:
         header = read_pack_header(pack_path)
 
         # Read the entire packfile
-        with open(pack_path, 'rb') as f:
+        with open(pack_path, "rb") as f:
             # Skip the header (12 bytes)
             f.seek(12)
             pack_data = f.read()
@@ -471,13 +466,11 @@ def scan_packfile(pack_path: Path) -> List[PackEntry]:
                 # Attempt to decompress the object data to validate it
                 try:
                     # Extract the compressed data for this entry
-                    compressed_data = pack_data[entry.data_offset:next_offset]
+                    compressed_data = pack_data[entry.data_offset : next_offset]
                     zlib.decompress(compressed_data)
                 except zlib.error:
                     # Record the error and raise it immediately
-                    raise GitObjectError(
-                        f"Invalid CRC at offset {offset + 12}"
-                    )
+                    raise GitObjectError(f"Invalid CRC at offset {offset + 12}")
 
                 # Adjust offset to account for the 12-byte header
                 entry.offset += 12
@@ -489,17 +482,12 @@ def scan_packfile(pack_path: Path) -> List[PackEntry]:
                 offset = next_offset
             except GitObjectError as e:
                 # Immediately propagate the error
-                raise GitObjectError(
-                    f"Invalid CRC at offset {offset + 12}: "
-                    f"{e}"
-                )
+                raise GitObjectError(f"Invalid CRC at offset {offset + 12}: " f"{e}")
 
         return entries
 
     except (IOError, PermissionError) as e:
-         raise GitObjectError(
-            f"Failed to scan packfile: {e}"
-        )
+        raise GitObjectError(f"Failed to scan packfile: {e}")
 
 
 def iter_objects(repo_path: Path) -> Iterator[GitObject]:
@@ -515,24 +503,20 @@ def iter_objects(repo_path: Path) -> Iterator[GitObject]:
         GitObjectError: If the repository is invalid
     """
     if not repo_path.exists() or not repo_path.is_dir():
-        raise GitObjectError(
-            f"Invalid repository path: {repo_path}"
-        )
+        raise GitObjectError(f"Invalid repository path: {repo_path}")
 
     objects_dir = repo_path / "objects"
     if not objects_dir.exists() or not objects_dir.is_dir():
-        raise GitObjectError(
-            f"Objects directory not found: {objects_dir}"
-        )
+        raise GitObjectError(f"Objects directory not found: {objects_dir}")
 
     # Scan loose objects
     for prefix_dir in objects_dir.iterdir():
         # Skip non-directories and special directories
-        if not prefix_dir.is_dir() or prefix_dir.name in ('info', 'pack'):
+        if not prefix_dir.is_dir() or prefix_dir.name in ("info", "pack"):
             continue
 
         # Check if this is a valid hex prefix
-        is_valid_hex = all(c in '0123456789abcdef' for c in prefix_dir.name)
+        is_valid_hex = all(c in "0123456789abcdef" for c in prefix_dir.name)
         if len(prefix_dir.name) != 2 or not is_valid_hex:
             continue
 

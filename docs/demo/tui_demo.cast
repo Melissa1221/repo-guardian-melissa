@@ -1,0 +1,2 @@
+{"version": 2, "width": 120, "height": 16, "timestamp": 1746382670, "env": {"SHELL": "/usr/sbin/zsh", "TERM": "xterm-256color"}}
+[0.014239, "o", "/root/home/uni/6semester/software-development/PC1/repo-guardian/venv/bin/python: No module named guardian.__main__; 'guardian' is a package and cannot be directly executed\r\n"]
