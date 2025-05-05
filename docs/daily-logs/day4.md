@@ -35,4 +35,4 @@
 - Mejorar la CLI con opciones adicionales
 - Añadir interfaz para reparación de repositorios
 - Aumentar cobertura de pruebas a 80%
-- Añadir escenarios BDD adicionales para reescritura de historia y packfiles truncados 
+- Añadir escenarios BDD adicionales para reescritura de historia y packfiles truncados

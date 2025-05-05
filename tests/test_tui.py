@@ -363,13 +363,13 @@ def test_run_demo_with_console_input(tui_instance):
     # Mock scan_repository to prevent actual scanning
     with patch.object(tui_instance, "scan_repository") as mock_scan:
         # Mock time.time and sleep to control demo duration
-        with patch("time.time") as mock_time, patch(
-            "time.sleep"
-        ), patch.dict("os.environ", {}, clear=True), patch.object(
-            tui_instance.console, "clear"
-        ), patch.object(tui_instance.console, "print"), patch.object(
-            tui_instance.console, "input"
-        ) as mock_input, patch.object(tui_instance, "render"):
+        with patch("time.time") as mock_time, patch("time.sleep"), patch.dict(
+            "os.environ", {}, clear=True
+        ), patch.object(tui_instance.console, "clear"), patch.object(
+            tui_instance.console, "print"
+        ), patch.object(tui_instance.console, "input") as mock_input, patch.object(
+            tui_instance, "render"
+        ):
             # First call returns start time, second call is for the loop check
             mock_time.side_effect = [100, 111]  # 11 seconds elapsed
 
@@ -388,9 +388,7 @@ def test_run_demo_in_test_environment(tui_instance):
     # Mock scan_repository to prevent actual scanning
     with patch.object(tui_instance, "scan_repository") as mock_scan:
         # Mock time.time and sleep to control demo duration
-        with patch("time.time") as mock_time, patch(
-            "time.sleep"
-        ), patch.dict(
+        with patch("time.time") as mock_time, patch("time.sleep"), patch.dict(
             "os.environ", {"PYTEST_CURRENT_TEST": "yes"}, clear=False
         ), patch.object(tui_instance.console, "clear"), patch.object(
             tui_instance.console, "print"

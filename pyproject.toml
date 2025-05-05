@@ -32,8 +32,8 @@ dependencies = [
 guardian = "guardian.cli:main"
 
 [project.urls]
-"Homepage" = "https://github.com/username/repo-guardian"
-"Bug Tracker" = "https://github.com/username/repo-guardian/issues"
+"Homepage" = "https://github.com/Melissa1221/repo-guardian"
+"Bug Tracker" = "https://github.com/Melissa1221/repo-guardian/issues"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -45,4 +45,3 @@ python_classes = "Test*"
 select = ["E", "F", "W", "I"]
 line-length = 88
 target-version = "py310"
-ignore = ["E203"] 

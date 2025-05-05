@@ -15,4 +15,4 @@ Cierra #
 - [ ] La cobertura de pruebas se mantiene o mejora
 - [ ] La documentación ha sido actualizada según sea necesario
 - [ ] El pipeline CI pasa
-- [ ] Mi código sigue las directrices de estilo del proyecto 
+- [ ] Mi código sigue las directrices de estilo del proyecto

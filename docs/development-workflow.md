@@ -36,8 +36,7 @@ El proyecto utiliza hooks de pre-commit para garantizar la calidad del código a
 ### Método 1: Script Pre-commit Manual
 
 Hemos configurado un hook de pre-commit básico que verifica:
-1. Problemas de linting con ruff
-2. Pruebas unitarias (excluyendo las pruebas lentas)
+1. Problemas de linting con ruff (comprobación de estilo y errores de código)
 
 Este hook se instala automáticamente en `.git/hooks/pre-commit` y se ejecuta antes de cada commit.
 
@@ -61,7 +60,15 @@ Esta configuración incluye:
 - Ordenación de imports con isort
 - Verificación de archivos YAML y TOML
 - Detección de conflictos de merge
-- Ejecución de pruebas unitarias básicas
+
+Para probar la funcionalidad completa, incluyendo tests, se recomienda ejecutar manualmente:
+```bash
+# Ejecutar pruebas unitarias
+pytest
+
+# Ejecutar pruebas con cobertura
+pytest --cov=guardian
+```
 
 ## Flujo de Trabajo Git
 

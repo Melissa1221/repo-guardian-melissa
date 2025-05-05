@@ -39,4 +39,4 @@ El proyecto se completará en 8 días de la siguiente manera:
 - **Días 1-2**: RX-10, RX-11, RX-12 (Escáner de Objetos + BDD)
 - **Días 3-4**: RX-13, RX-14, RX-15, RX-16, RX-17, RX-18 (DAG + JW + Alpha)
 - **Días 5-6**: RX-20, RX-21, RX-22, RX-23, RX-24, RX-25 (UI + Beta)
-- **Días 7-8**: RX-30, RX-31, RX-32, RX-33, RX-34 (Docs + Versión Final) 
+- **Días 7-8**: RX-30, RX-31, RX-32, RX-33, RX-34 (Docs + Versión Final)

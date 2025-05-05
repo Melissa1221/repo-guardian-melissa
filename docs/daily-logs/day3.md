@@ -34,4 +34,4 @@
 - Añadir lógica para analizar información de padres de objetos commit
 - Implementar cálculo de número de generación usando BFS
 - Completar las funciones utilitarias restantes (find_roots, find_heads, etc.)
-- Implementar completamente las pruebas con aserciones reales 
+- Implementar completamente las pruebas con aserciones reales

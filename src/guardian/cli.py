@@ -84,6 +84,15 @@ def main():
         help="Path to the Git repository (default: current directory)",
     )
 
+    # Add command-line completion with argcomplete
+    try:
+        import argcomplete
+
+        argcomplete.autocomplete(parser)
+    except ImportError:
+        # argcomplete is optional, so we don't require it
+        pass
+
     # Parse arguments
     args = parser.parse_args()
 

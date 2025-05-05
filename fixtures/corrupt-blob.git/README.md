@@ -12,4 +12,4 @@ Este fixture contiene un repositorio Git con objetos corruptos para pruebas.
 
 1. **Blob corrompido**: La compresión zlib está dañada en los últimos bytes, causando error CRC.
 2. **Cabecera inválida**: El formato de la cabecera no es "tipo tamaño\0", sino solo "tipo\0".
-3. **Desajuste de tamaño**: El tamaño declarado en la cabecera no coincide con el contenido real. 
+3. **Desajuste de tamaño**: El tamaño declarado en la cabecera no coincide con el contenido real.

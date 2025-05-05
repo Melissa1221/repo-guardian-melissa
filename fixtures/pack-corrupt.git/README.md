@@ -16,4 +16,4 @@ the Repo-Guardian tool.
 ## Usage
 
 This fixture is used in BDD tests to verify the behavior of the Repo-Guardian tool
-when encountered with a corrupted packfile. 
+when encountered with a corrupted packfile.

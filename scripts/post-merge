@@ -27,4 +27,4 @@ fi
 
 # Keep a local copy
 cp "$OUT" "$REPO_PATH/recovered.graphml"
-echo "A copy of the graph is saved to $REPO_PATH/recovered.graphml" 
+echo "A copy of the graph is saved to $REPO_PATH/recovered.graphml"

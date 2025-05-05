@@ -1,5 +1,6 @@
 """Implementaciones de pasos de marcador de posición para pruebas BDD."""
-from behave import given, when, then
+from behave import given, then, when
+
 
 @given('una configuración de marcador de posición')
 def step_placeholder_setup(context):
@@ -14,4 +15,4 @@ def step_placeholder_action(context):
 @then('la verificación de marcador de posición pasa')
 def step_placeholder_verification(context):
     """Verificar condición de marcador de posición."""
-    assert context.placeholder is True 
+    assert context.placeholder is True

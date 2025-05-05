@@ -8,26 +8,50 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .
-      
+
       - name: Lint with ruff
         run: |
-          ruff src tests --quiet
-      
+          ruff check --fix src tests scripts
+
       - name: Test with pytest
         run: |
-          pytest -n auto --cov=guardian
-      
+          pytest -n auto --cov=guardian --junitxml=junit.xml
+
       - name: Run BDD tests
         run: |
-          behave -f progress 
+          behave -f progress
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: junit.xml
+        if: always()
+
+      - name: Check shell scripts
+        run: |
+          sudo apt-get install -y shellcheck
+          shellcheck scripts/*.sh
+
+      - name: Coverage report
+        run: |
+          python -m coverage report
+          python -m coverage html
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: htmlcov/
+        if: always()

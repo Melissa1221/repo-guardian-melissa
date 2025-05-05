@@ -87,4 +87,4 @@ Split into two panels:
 | Tab       | Switch between panels            |
 | ESC       | Exit or go back                  |
 | Q         | Quit application                 |
-``` 
+```

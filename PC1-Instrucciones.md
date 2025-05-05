@@ -1,21 +1,21 @@
-## Actividad: **Repo-Guardian**  
+## Actividad: **Repo-Guardian**
 
 > Esta actividad acompaña a la evaluación dada el 28 de abril según las rúbricas mencionadas en el curso.
 
-#### 1. Propósito, alcance y líneas maestras  
+#### 1. Propósito, alcance y líneas maestras
 
 **Repo-Guardian** es un proyecto de desarrollo de software avanzada cuyo resultado será una utilidad de línea de comandos (CLI) y  terminal user interface (TUI) capaz de **auditar, reparar y re-lineralizar la integridad de cualquier directorio `.git`**, ya contenga
-objetos sueltos ("loose") o empaquetados en packfiles. El programa implementará:  
+objetos sueltos ("loose") o empaquetados en packfiles. El programa implementará:
 
-* **Árbol de Merkle** y verificación criptográfica con **SHA-256** (opcionalmente SHA-1 para retro-compatibilidad).  
-* **Búsqueda binaria de commits defectuosos** usando `git bisect` embebido y heurísticas propias.  
-* **Reconstrucción de historiales potencialmente re-escritos** (caso `git filter-repo`, `git rebase -i`, force-push, etc.) mediante cálculo del **Jaro–Winkler distance** (umbral ≥ 0,92) sobre las rutas `commit → root`.  
-* **Exportación de un grafo dirigido acíclico (DAG)**; se generará `recovered.graphml` para su inspección en Gephi, Neo4j o Graphviz.  
-* Interfaz TUI (curses) con paneles de progreso, resumen de hallazgos y comandos de reparación interactiva.  
+* **Árbol de Merkle** y verificación criptográfica con **SHA-256** (opcionalmente SHA-1 para retro-compatibilidad).
+* **Búsqueda binaria de commits defectuosos** usando `git bisect` embebido y heurísticas propias.
+* **Reconstrucción de historiales potencialmente re-escritos** (caso `git filter-repo`, `git rebase -i`, force-push, etc.) mediante cálculo del **Jaro–Winkler distance** (umbral ≥ 0,92) sobre las rutas `commit → root`.
+* **Exportación de un grafo dirigido acíclico (DAG)**; se generará `recovered.graphml` para su inspección en Gephi, Neo4j o Graphviz.
+* Interfaz TUI (curses) con paneles de progreso, resumen de hallazgos y comandos de reparación interactiva.
 
 Orientación DevOps / BDD: el proyecto debe nacer, evolucionar y entregarse con *good practices* profesionales: tablero Kanban, commits semánticos, flujos de Pull Request, branch-protection, cobertura de pruebas, documentación continua, etiquetado semver, generación automática  de changelog, despliegue de site de documentación y empaquetado de artefactos en GitHub Releases.
 
-#### 2. Núcleo algorítmico y estructura de datos requerida  
+#### 2. Núcleo algorítmico y estructura de datos requerida
 
 | Paso del pipeline | Descripción detenida | Estructura usada | Complejidad esperada |
 |-------------------|----------------------|------------------|----------------------|
@@ -26,7 +26,7 @@ Orientación DevOps / BDD: el proyecto debe nacer, evolucionar y entregarse con 
 | 5. *Export graph* | Serializar DAG en GraphML, atributos: `sha`, `author`, `timestamp`, `GN`, `status`. | `networkx.DiGraph` | O(V + E) write |
 
 
-#### 3. Relación explícita con los temas del temario Git + BDD + DevOps  
+#### 3. Relación explícita con los temas del temario Git + BDD + DevOps
 
 | Tema oficial | Implementación práctica en Repo-Guardian |
 |--------------|------------------------------------------|
@@ -36,31 +36,31 @@ Orientación DevOps / BDD: el proyecto debe nacer, evolucionar y entregarse con 
 | 8.2 **hooks** | Un hook `post-merge` empaqueta `recovered.graphml` y lo sube al último Release a través de la CLI `gh`. |
 | 10 **BDD** | Tres *features* Gherkin mínimas: "Objeto corrupto", "Packfile truncado", "Historial re-escrito". Cada escenario reproduce un repo de fixtures, ejecuta `guardian scan` y asserta exit-code y salida. |
 
-#### 4. Requisitos previos (se cumplen 24 h antes de **D-0**)  
+#### 4. Requisitos previos (se cumplen 24 h antes de **D-0**)
 
-* **Herramientas base**  
+* **Herramientas base**
   ```bash
   python -m pip install -U pipx
   pipx install ruff pytest pytest-xdist behave coverage \
                textdistance networkx rich pygtrie
-  ```  
-* **Configuración GitHub**  
-  * Generar **Personal Access Token** (PAT) con scopes `repo`, `workflow`, `packages`; guardarlo en `Settings → Secrets → CI_TOKEN`.  
-  * Activar **GitHub Projects Beta** estilo Kanban, con columnas: *Backlog*, *In-Progress*, *Review*, *Done*.  
-* **Grabación de vídeo**: tener instalado OBS Studio / Loom, set 1080p@30 fps, micro activo.  
+  ```
+* **Configuración GitHub**
+  * Generar **Personal Access Token** (PAT) con scopes `repo`, `workflow`, `packages`; guardarlo en `Settings → Secrets → CI_TOKEN`.
+  * Activar **GitHub Projects Beta** estilo Kanban, con columnas: *Backlog*, *In-Progress*, *Review*, *Done*.
+* **Grabación de vídeo**: tener instalado OBS Studio / Loom, set 1080p@30 fps, micro activo.
 
-#### 5. Configuración inicial del repositorio y de la automatización  
+#### 5. Configuración inicial del repositorio y de la automatización
 
-1. **Nombre** sugerido: `repo-guardian-<usuario>`. Preferible público; si privado, otorgar acceso al docente (`@prof-user`).  
-2. **Branch principal**: `main`. Crear rama `develop` para trabajo cotidiano.  
-3. **Branch protection**:  
-   * Requerir Pull Request procedente de cualquier rama excepto `main`.  
-   * Solicitar CI verde (`lint`, `pytest`, `behave`, `coverage ≥ 80 %`).  
-   * Exigir al menos un *review* (puede ser auto-merge tras aprobación).  
-4. **Plantillas**:  
-   * `ISSUE_TEMPLATE/bug_report.md` con secciones reproducibles.  
-   * `PULL_REQUEST_TEMPLATE.md` con checklist: "Descripción", "Closes #...", "Captura CLI/TUI", "Cobertura".  
-5. **Workflow** `.github/workflows/ci.yml` inicial:  
+1. **Nombre** sugerido: `repo-guardian-<usuario>`. Preferible público; si privado, otorgar acceso al docente (`@prof-user`).
+2. **Branch principal**: `main`. Crear rama `develop` para trabajo cotidiano.
+3. **Branch protection**:
+   * Requerir Pull Request procedente de cualquier rama excepto `main`.
+   * Solicitar CI verde (`lint`, `pytest`, `behave`, `coverage ≥ 80 %`).
+   * Exigir al menos un *review* (puede ser auto-merge tras aprobación).
+4. **Plantillas**:
+   * `ISSUE_TEMPLATE/bug_report.md` con secciones reproducibles.
+   * `PULL_REQUEST_TEMPLATE.md` con checklist: "Descripción", "Closes #...", "Captura CLI/TUI", "Cobertura".
+5. **Workflow** `.github/workflows/ci.yml` inicial:
    ```yaml
    name: CI
    on: [push, pull_request]
@@ -75,11 +75,11 @@ Orientación DevOps / BDD: el proyecto debe nacer, evolucionar y entregarse con 
          - run: ruff src tests --quiet
          - run: pytest -n auto --cov=guardian
          - run: behave -f progress
-   ```  
-6. **Roadmap.md**: tabla <épica, historia, tarea, prioridad, etiqueta Kanban>.  
+   ```
+6. **Roadmap.md**: tabla <épica, historia, tarea, prioridad, etiqueta Kanban>.
 7. Crear **épica E-01 Setup** con issues: *RX-01 Crear repo*, *RX-02 Configurar CI*, *RX-03 Plantillas*, *RX-04 Roadmap*.
 
-#### 6. Calendario global de hitos (avance verificado cada 48 h)  
+#### 6. Calendario global de hitos (avance verificado cada 48 h)
 
 | Día | Entregables obligatorios | Cómo se recoge la evidencia |
 |-----|--------------------------|-----------------------------|
@@ -90,80 +90,80 @@ Orientación DevOps / BDD: el proyecto debe nacer, evolucionar y entregarse con 
 | **D-8** | Tag `v1.0.0`: documentación MkDocs publicada, informe comparativo (tiempo / memoria vs `git fsck`), vídeo ≤ 5 min en YouTube unlisted. | Release final con binarios, changelog, link vídeo; tablero 100 % cerrado. |
 
 
-#### 7. Detalle de tareas técnicas día por día  
+#### 7. Detalle de tareas técnicas día por día
 
-#### Día -1 → D-0 (*Bootstrap y entorno*)  
+#### Día -1 → D-0 (*Bootstrap y entorno*)
 
-* Crear `virtualenv`, instalar dependencias, añadir `requirements.txt`.  
-* Escribir `README.md` con descripción corta, tabla de comandos, badges "en construcción".  
-* Dibujar **diagrama de contexto** (PlantUML) que muestre usuario ↔ Repo-Guardian ↔ Repositorio Git ↔ GitHub API.  
+* Crear `virtualenv`, instalar dependencias, añadir `requirements.txt`.
+* Escribir `README.md` con descripción corta, tabla de comandos, badges "en construcción".
+* Dibujar **diagrama de contexto** (PlantUML) que muestre usuario ↔ Repo-Guardian ↔ Repositorio Git ↔ GitHub API.
 * Colocar CI minimal (tests vacíos que siempre pasan) para verificar tubería.
 
-#### D-1 (*Object Scanner I*)  
+#### D-1 (*Object Scanner I*)
 
-* Implementar lectura binaria de objetos sueltos:  
+* Implementar lectura binaria de objetos sueltos:
   ```python
   def read_loose(path: Path) -> GitObject: ...
-  ```  
-* 6 pruebas unitarias: rutas válidas, CRC erróneo, type desconocido, etc.  
-* Añadir fixture `fixtures/corrupt-blob.git` (pequeño repo).  
+  ```
+* 6 pruebas unitarias: rutas válidas, CRC erróneo, type desconocido, etc.
+* Añadir fixture `fixtures/corrupt-blob.git` (pequeño repo).
 
-#### D-2 (*Object Scanner II + BDD #1*)  
+#### D-2 (*Object Scanner II + BDD #1*)
 
-* Añadir soporte a packfiles: parsear header, iterar entradas, usar idx.  
-* `behave` feature:  
+* Añadir soporte a packfiles: parsear header, iterar entradas, usar idx.
+* `behave` feature:
   ```gherkin
   Scenario: Blob dañado en packfile
     Given un repositorio con packfile "fixtures/pack-corrupt.git"
     When ejecuto "guardian scan fixtures/pack-corrupt.git"
     Then el exit code es 2
      And la salida contiene "Invalid CRC at offset"
-  ```  
+  ```
 * CI exige coverage ≥ 0,60; accionará badge `codecov` o `coveralls`.
 
-#### D-3 (*Diseño DAG*)  
+#### D-3 (*Diseño DAG*)
 
-* Redactar `docs/dag.mmd` con Mermaid inspirado en Git’s commit DAG.  
-* Implementar esqueleto `dag_builder.py` con firma pública y tests-placeholder.  
+* Redactar `docs/dag.mmd` con Mermaid inspirado en Git’s commit DAG.
+* Implementar esqueleto `dag_builder.py` con firma pública y tests-placeholder.
 
-#### D-4 (*DAG completo + Jaro–Winkler + hook*)  
+#### D-4 (*DAG completo + Jaro–Winkler + hook*)
 
-* Función `build_graph(objects: Iterable[Commit]) -> DiGraph` que retorna `networkx.DiGraph`.  
-* `jw_detector.is_rewrite(a, b) -> bool` donde `a,b` son listas de hashes.  
-* Crear hook Bash `post-merge` que llama a `guardian cli export-graph` y usa CLI `gh` para anexar artefacto al Release actual.  
+* Función `build_graph(objects: Iterable[Commit]) -> DiGraph` que retorna `networkx.DiGraph`.
+* `jw_detector.is_rewrite(a, b) -> bool` donde `a,b` son listas de hashes.
+* Crear hook Bash `post-merge` que llama a `guardian cli export-graph` y usa CLI `gh` para anexar artefacto al Release actual.
 * Release draft `v0.5.0-alpha` generado por `draft-release.yml`.
 
-#### D-5 (*Diseño y wireframe TUI*)  
+#### D-5 (*Diseño y wireframe TUI*)
 
-* Grabación asciinema o GIF con wireframe: barra de progreso, panel errores, panel comandos (`R` Repair, `E` Export).  
-* Crear `cli.py` con sub-comandos: `scan`, `export-graph`, `stats`.  
+* Grabación asciinema o GIF con wireframe: barra de progreso, panel errores, panel comandos (`R` Repair, `E` Export).
+* Crear `cli.py` con sub-comandos: `scan`, `export-graph`, `stats`.
 
-#### D-6 (*TUI final, wrapper script, argcomplete*)  
+#### D-6 (*TUI final, wrapper script, argcomplete*)
 
-* `scan-repo.sh` permite:  
+* `scan-repo.sh` permite:
   ```bash
   ./scan-repo.sh /path/to/repo --threads 8 --repair --export
-  ```  
-* Añadir completado automático con `argcomplete`.  
+  ```
+* Añadir completado automático con `argcomplete`.
 * CI: `pytest -n auto`; publicar reportes JUnit para GitHub Actions annotations.
 
-#### D-7 (*Benchmark + documentación definitiva*)  
+#### D-7 (*Benchmark + documentación definitiva*)
 
-* Script `bench.py` compara 10 repos de fixture ( tamaños 2 MiB → 1 GiB ) midiendo tiempo real, p95 memoria; genera tabla Markdown.  
-* Integra gráficos en MkDocs vía `matplotlib` a PNG (no colores definidos manualmente para cumplir guidelines).  
+* Script `bench.py` compara 10 repos de fixture ( tamaños 2 MiB → 1 GiB ) midiendo tiempo real, p95 memoria; genera tabla Markdown.
+* Integra gráficos en MkDocs vía `matplotlib` a PNG (no colores definidos manualmente para cumplir guidelines).
 * Publicar site con `mkdocs gh-deploy --force`.
 
-#### D-8 (*Vídeo, empaquetado y cierre*)  
+#### D-8 (*Vídeo, empaquetado y cierre*)
 
-* Guion recomendado (≈ 42 s por segmento):  
-  1. Introducción y motivación.  
-  2. Escaneo en vivo de repo corrupto (TUI muestra errores).  
-  3. Reparación automática, exportación `recovered.graphml`.  
-  4. Navegación por Release en GitHub donde se adjunta artefacto.  
-  5. Mención de documentación y cómo instalar con `pip install repo-guardian`.   
+* Guion recomendado (≈ 42 s por segmento):
+  1. Introducción y motivación.
+  2. Escaneo en vivo de repo corrupto (TUI muestra errores).
+  3. Reparación automática, exportación `recovered.graphml`.
+  4. Navegación por Release en GitHub donde se adjunta artefacto.
+  5. Mención de documentación y cómo instalar con `pip install repo-guardian`.
 * Cerrar issue "Entrega final", mover última tarjeta Kanban a *Done*, congelar trabajo.
 
-#### 8. Estructura final aconsejada del repositorio  
+#### 8. Estructura final aconsejada del repositorio
 
 ```
 repo-guardian/
@@ -209,20 +209,20 @@ repo-guardian/
 ```
 
 
-#### 9. Convención de commits y mensajes de Pull Request  
+#### 9. Convención de commits y mensajes de Pull Request
 
-* Formato general:  
+* Formato general:
   ```text
   RX-15 feat: add BFS-based DAG builder
 
   Implements build_graph() using collections.deque...
   ```
-* Tipos permitidos: **feat**, **fix**, **refactor**, **test**, **docs**, **chore**.  
-* Cada mensaje debe contener al menos un Issue o Epic cerrado: `Closes #23, #24`.  
+* Tipos permitidos: **feat**, **fix**, **refactor**, **test**, **docs**, **chore**.
+* Cada mensaje debe contener al menos un Issue o Epic cerrado: `Closes #23, #24`.
 * La rama debe llamarse `feature/RX-15-dag-builder` o `fix/RX-32-crc-check`.
 
 
-#### 10. Seguimiento diario y plantilla "Daily-log"  
+#### 10. Seguimiento diario y plantilla "Daily-log"
 
 Crear issue titulado "Daily-log-YYYY-MM-DD"; responder a su propio hilo cada día con:
 
@@ -241,9 +241,9 @@ Crear issue titulado "Daily-log-YYYY-MM-DD"; responder a su propio hilo cada dí
 El docente revisará y comentará con etiqueta `mentor-feedback`.
 
 
-#### 11. Workflows complementarios y hook ilustrativo  
+#### 11. Workflows complementarios y hook ilustrativo
 
-#### 11.1 `draft-release.yml` (extracto)  
+#### 11.1 `draft-release.yml` (extracto)
 
 ```yaml
 name: Release Drafter
@@ -259,7 +259,7 @@ jobs:
       - uses: release-drafter/release-drafter@v6
 ```
 
-#### 11.2 Hook `post-merge` mínimo  
+#### 11.2 Hook `post-merge` mínimo
 
 ```bash
 #!/usr/bin/env bash
@@ -276,7 +276,7 @@ printf "✓ DAG exportado a %s y subido a %s\n" "$OUT" "$TAG"
 Recordar `chmod +x .git/hooks/post-merge`.
 
 
-#### 12. Ejemplo de BDD: archivo `dag_rewrite.feature`  
+#### 12. Ejemplo de BDD: archivo `dag_rewrite.feature`
 
 ```gherkin
 Feature: Detección de historiales re-escritos
@@ -301,7 +301,7 @@ def step_impl(context, cmd):
 ```
 
 
-#### 13. Requisitos técnicos mínimos y métricas objetivas  
+#### 13. Requisitos técnicos mínimos y métricas objetivas
 
 | Área | Métrica obligatoria |
 |------|---------------------|
@@ -315,7 +315,7 @@ def step_impl(context, cmd):
 
 
 
-#### 14. Rúbrica exhaustiva de evaluación (20 puntos ponderados)  
+#### 14. Rúbrica exhaustiva de evaluación (20 puntos ponderados)
 
 | Dimensión | Peso | Se evalúa en | Detalle de puntos |
 |-----------|------|--------------|-------------------|
@@ -328,15 +328,15 @@ def step_impl(context, cmd):
 
 La nota final será la suma, los decimales se redondean a la centésima.
 
-#### 15. Entrega oficial y política de cierre  
+#### 15. Entrega oficial y política de cierre
 
-* La única entrega juzgada será la etiqueta **`v1.0.0`** publicada como GitHub Release antes de las **23:59 (hora Lima) del D-8**.  
-* Cualquier commit posterior a dicha etiqueta o cualquier Release re-subido no se tendrá en cuenta.  
-* Se descontarán 5 puntos por cada sección faltante del Release (binarios, changelog, etc).  
-* Si la CI está roja en dicho commit, se tomará la última revisión verde anterior.  
+* La única entrega juzgada será la etiqueta **`v1.0.0`** publicada como GitHub Release antes de las **23:59 (hora Lima) del D-8**.
+* Cualquier commit posterior a dicha etiqueta o cualquier Release re-subido no se tendrá en cuenta.
+* Se descontarán 5 puntos por cada sección faltante del Release (binarios, changelog, etc).
+* Si la CI está roja en dicho commit, se tomará la última revisión verde anterior.
 
 
-#### 16. Preguntas frecuentes seleccionadas  
+#### 16. Preguntas frecuentes seleccionadas
 
 | Pregunta | Respuesta breve |
 |----------|-----------------|

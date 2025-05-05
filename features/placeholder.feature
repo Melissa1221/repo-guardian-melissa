@@ -4,4 +4,4 @@ Feature: Característica de marcador de posición
   Scenario: Escenario de marcador de posición
     Given una configuración de marcador de posición
     When ocurre una acción de marcador de posición
-    Then la verificación de marcador de posición pasa 
+    Then la verificación de marcador de posición pasa

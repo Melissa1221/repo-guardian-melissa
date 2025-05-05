@@ -9,7 +9,7 @@ rectangle "Repo-Guardian" as rg {
   component "Constructor DAG" as dag
   component "Detector JW" as jw
   component "Módulo de Reparación" as repair
-  
+
   cli --> tui
   tui --> scanner
   tui --> dag
@@ -22,7 +22,7 @@ database "Repositorio Git" as git {
   folder ".git/refs/" as refs
   file ".git/index" as index
   file ".git/HEAD" as head
-  
+
   objects --> refs
   refs --> head
   objects --> index
@@ -34,4 +34,4 @@ user --> cli : interactúa
 rg --> git : lee/repara
 rg --> github : exporta artefactos
 
-@enduml 
+@enduml

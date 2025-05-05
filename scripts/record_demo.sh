@@ -17,4 +17,4 @@ asciinema rec $OUTPUT_FILE -c "python -m guardian demo --repo ."
 
 echo "Demo recorded to $OUTPUT_FILE"
 echo "You can play it back with: asciinema play $OUTPUT_FILE"
-echo "Or convert to GIF with: agg $OUTPUT_FILE demo.gif (requires agg tool)" 
+echo "Or convert to GIF with: agg $OUTPUT_FILE demo.gif (requires agg tool)"

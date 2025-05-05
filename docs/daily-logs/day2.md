@@ -17,4 +17,4 @@
 ## Próximo paso
 - Implementar el DAG builder para análisis de grafo de objetos Git
 - Implementar detector Jaro-Winkler para identificar historiales reescritos
-- Crear hook post-merge para exportación de grafos 
+- Crear hook post-merge para exportación de grafos

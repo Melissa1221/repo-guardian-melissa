@@ -172,4 +172,4 @@ mkdocs serve
 
 # Publicar documentación en GitHub Pages
 mkdocs gh-deploy --force
-``` 
+```

@@ -11,10 +11,10 @@ assignees: ''
 
 ## Pasos para Reproducir
 <!--Pasos para reproducir el comportamiento:-->
-1. 
-2. 
-3. 
-4. 
+1.
+2.
+3.
+4.
 
 ## Comportamiento Esperado
 <!--Una descripción clara y concisa de lo que esperabas que sucediera.-->
@@ -27,4 +27,4 @@ assignees: ''
 - Versión de Repo-Guardian: [ej. 0.1.0]
 
 ## Contexto Adicional
-<!--Añade cualquier otro contexto sobre el problema aquí, como capturas de pantalla o salida de logs.--> 
+<!--Añade cualquier otro contexto sobre el problema aquí, como capturas de pantalla o salida de logs.-->

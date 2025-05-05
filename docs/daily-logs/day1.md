@@ -14,4 +14,4 @@
 ## Próximo paso
 - Implementar soporte para objetos empaquetados (packfiles)
 - Crear primer escenario BDD
-- Mejorar la cobertura de pruebas 
+- Mejorar la cobertura de pruebas
