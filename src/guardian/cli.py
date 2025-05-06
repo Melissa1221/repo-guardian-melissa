@@ -5,6 +5,7 @@ This module provides the CLI functionality for scanning and repairing Git reposi
 
 import argparse
 import sys
+from pathlib import Path
 from typing import List, Optional
 
 import networkx as nx
@@ -104,7 +105,7 @@ def cmd_scan(args):
     Returns:
         Exit code (0 for success, non-zero for errors)
     """
-    repo_path = args.repo_path
+    repo_path = Path(args.repo_path)
 
     # Verify repository exists
     if not repo_path.exists():
@@ -127,7 +128,7 @@ def cmd_scan(args):
                 print(f"Found {len(entries)} objects in packfile")
             except GitObjectError as e:
                 print(f"Error: {e}", file=sys.stderr)
-                return 2  # Error code 2 for packfile errors
+                return 1  # Change error code 2 to 1 for packfile errors
 
     print("Scan completed")
     return 0

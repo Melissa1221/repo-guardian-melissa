@@ -116,9 +116,7 @@ class TestScanCommand:
                 with mock.patch.object(Path, "glob") as mock_glob:
                     # Return our mock pack file
                     mock_pack_path = temp_repo / ".git" / "objects" / "pack"
-                    mock_glob.return_value = [
-                        mock_pack_path / "pack-test.pack"
-                    ]
+                    mock_glob.return_value = [mock_pack_path / "pack-test.pack"]
 
                     # Now patch the actual scan_packfile import
                     with mock.patch("guardian.cli.scan_packfile") as mock_scan:
@@ -145,9 +143,7 @@ class TestScanCommand:
                 with mock.patch.object(Path, "glob") as mock_glob:
                     # Return our mock pack file
                     mock_pack_path = temp_repo / ".git" / "objects" / "pack"
-                    mock_glob.return_value = [
-                        mock_pack_path / "pack-test.pack"
-                    ]
+                    mock_glob.return_value = [mock_pack_path / "pack-test.pack"]
 
                     # Now patch the actual scan_packfile import
                     with mock.patch("guardian.cli.scan_packfile") as mock_scan:
@@ -155,7 +151,7 @@ class TestScanCommand:
                         mock_scan.side_effect = GitObjectError("Invalid packfile")
 
                         with mock.patch("sys.stdout"), mock.patch("sys.stderr"):
-                            assert cmd_scan(args) == 2
+                            assert cmd_scan(args) == 1
                             # Verify scan_packfile was called once
                             mock_scan.assert_called_once()
 
