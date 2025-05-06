@@ -5,7 +5,7 @@ This module provides the CLI functionality for scanning and repairing Git reposi
 
 import argparse
 import sys
-from pathlib import Path
+from typing import List, Optional
 
 import networkx as nx
 
@@ -13,99 +13,86 @@ from guardian.dag_builder import build_graph
 from guardian.object_scanner import GitObjectError, iter_objects, scan_packfile
 from guardian.tui import run_tui
 
+# Add argcomplete import - if not available, it will be ignored
+try:
+    import argcomplete
+except ImportError:
+    pass
 
-def main():
+
+def main(argv: Optional[List[str]] = None) -> int:
     """Main entry point for the CLI."""
+    if argv is None:
+        argv = sys.argv[1:]
+
     parser = argparse.ArgumentParser(
         description="Repo-Guardian: Git repository auditing and repair tool"
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
-    # Configure 'scan' subcommand
+    # Scan command
     scan_parser = subparsers.add_parser("scan", help="Scan repository for issues")
+    scan_parser.add_argument("repo_path", help="Path to the Git repository to scan")
     scan_parser.add_argument(
-        "repo_path", type=Path, help="Path to the Git repository to scan"
+        "--threads", type=int, default=1, help="Number of threads to use for scanning"
     )
     scan_parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Enable verbose output"
+        "--repair", action="store_true", help="Attempt to repair issues"
     )
     scan_parser.add_argument(
-        "--repair",
-        action="store_true",
-        help="Attempt to repair issues found during scan",
+        "--tui", action="store_true", help="Use terminal user interface"
     )
     scan_parser.add_argument(
-        "--tui",
-        action="store_true",
-        help="Use the Terminal User Interface for interactive scanning",
-    )
-    scan_parser.add_argument(
-        "--threads",
-        type=int,
-        default=1,
-        help="Number of threads to use for scanning (default: 1)",
+        "--export", action="store_true", help="Export repository graph after scanning"
     )
 
-    # Configure 'export-graph' subcommand
+    # Export graph command
     export_parser = subparsers.add_parser(
         "export-graph", help="Export repository graph to file"
     )
     export_parser.add_argument(
-        "--repo",
-        type=Path,
-        default=".",
-        help="Path to the Git repository (default: current directory)",
+        "--repo", required=True, help="Path to the Git repository"
     )
-    export_parser.add_argument(
-        "--out", type=Path, required=True, help="Output file path"
-    )
+    export_parser.add_argument("--out", required=True, help="Path to the output file")
     export_parser.add_argument(
         "--format",
-        choices=["graphml", "gexf", "json", "dot"],
+        choices=["graphml", "gexf", "json"],
         default="graphml",
-        help="Output file format (default: graphml)",
+        help="Format of the output file",
     )
 
-    # Configure 'stats' subcommand
+    # Stats command
     stats_parser = subparsers.add_parser("stats", help="Show repository statistics")
+    stats_parser.add_argument("repo_path", help="Path to the Git repository")
     stats_parser.add_argument(
-        "repo_path", type=Path, help="Path to the Git repository to analyze"
-    )
-    stats_parser.add_argument(
-        "--detailed", action="store_true", help="Show detailed statistics"
+        "--json", action="store_true", help="Output in JSON format"
     )
 
-    # Configure 'demo' subcommand (for development purposes)
-    demo_parser = subparsers.add_parser("demo", help="Run the TUI in demo mode")
-    demo_parser.add_argument(
-        "--repo",
-        type=Path,
-        default=".",
-        help="Path to the Git repository (default: current directory)",
-    )
+    _ = subparsers.add_parser("demo", help="Run the TUI in demo mode")
 
-    # Parse arguments
-    args = parser.parse_args()
+    # Enable argcomplete if available
+    try:
+        argcomplete.autocomplete(parser)
+    except NameError:
+        pass
 
-    # If no command was specified, show help
+    args = parser.parse_args(argv)
+
     if args.command is None:
         parser.print_help()
         return 0
 
-    # Execute the appropriate command
     if args.command == "scan":
-        if hasattr(args, "tui") and args.tui:
-            return cmd_scan_tui(args)
-        else:
-            return cmd_scan(args)
+        return cmd_scan(args)
     elif args.command == "export-graph":
         return cmd_export_graph(args)
     elif args.command == "stats":
         return cmd_stats(args)
     elif args.command == "demo":
         return cmd_demo(args)
-
-    return 0
+    else:
+        parser.print_help()
+        return 0
 
 
 def cmd_scan(args):
